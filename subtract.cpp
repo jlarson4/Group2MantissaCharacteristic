@@ -8,7 +8,7 @@ bool determineValidity(bool isNegative, int numerator, int len);
 void testConditions(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len);
 void longDivision(int numerator, int denominator, int current_char, char result[], int len);
 
-int main() {
+/*int main() {
 
 	const int size = 9;
 	char result[size];
@@ -35,7 +35,7 @@ int main() {
 	testConditions(60, 5, 112, 60, 4, 112, result, size);
 
 	return 0;
-}
+}*/
 
 //subtract: use to subtract one number from another given their sets of characteristic(s) and mantissa(s)
 //c1 is the first number's characteristic, n1 is the first number's numerator, d1 is the first number's denominator
