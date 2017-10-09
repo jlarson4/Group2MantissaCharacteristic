@@ -1,5 +1,6 @@
 #include <iostream>
 #include "subtract.cpp"
+#include "characteristic.h"
 
 using namespace std;
 
@@ -16,10 +17,13 @@ void testDivide();
 int main()
 {
 	//characteristic and mantissa test
-	testCharacteristicAndMantissa();
+	//testCharacteristicAndMantissa();
+	
+	//subtract test
+	testSubtract();
 	
 	//math function tests
-	testMath();
+	//testMath();
 
 	return 0;
 }
@@ -146,7 +150,7 @@ void testMath()
 	testMultiply();
 	testDivide();
 }
-//--
+/*/--
 void testAdd()
 {
 	const int SHORT_ARRAY_LENGTH = 5;
@@ -211,7 +215,7 @@ void testAdd()
 		}
 	}
 }
-//--
+*///--
 void testSubtract()
 {
 	const int SHORT_ARRAY_LENGTH = 5;
@@ -276,7 +280,7 @@ void testSubtract()
 		}
 	}
 }
-//--
+/*/--
 void testMultiply()
 {
 	const int SHORT_ARRAY_LENGTH = 5;
@@ -330,7 +334,8 @@ void testMultiply()
 	multiply(1, 1, 8, 1, 2, 3, largeArray, LARGE_ARRAY_LENGTH);
 	shouldConvert(largeArray, 1, 875, 1000);
 }
-//--
+*///--
+/*
 void testDivide()
 {
 	const int SHORT_ARRAY_LENGTH = 5;
@@ -404,3 +409,4 @@ void testDivide()
 	divide(1, 1, 8, 1, 2, 3, largeArray, LARGE_ARRAY_LENGTH);
 	shouldConvert(largeArray, 0, 675, 1000);
 }
+*/
