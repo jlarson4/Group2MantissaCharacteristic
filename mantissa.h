@@ -104,13 +104,13 @@ bool mantissa(char numString[], int& numerator, int& denominator)
 
             bool trailingZeroes = true;
 
-            while ((zeroCh < '0') || (zeroCh > '9'))
+            while (zeroCh != '\0')
             {
-                if (zeroIter == '0')
+                if (zeroCh == '0')
                 {
                     numZeroes++;
                 }
-                else if (ch != '\0')
+                else if (zeroCh != '\0')
                 {
                     numZeroes = 0;
                     trailingZeroes = false;
@@ -124,7 +124,7 @@ bool mantissa(char numString[], int& numerator, int& denominator)
             if (trailingZeroes == true)
             {
                 break;
-            }
+            }            
         }
 
         iter++;
@@ -135,10 +135,10 @@ bool mantissa(char numString[], int& numerator, int& denominator)
     // The numString of denominators is the total number of characters, minus 1 for the decimal, minus the numerators
     // then subtract zeroes
     numDenominators = iter - numeratorIndex - 1 - numSpaces;
-    cout << "Iter: " << iter << endl;
-    cout << "Numerator index: " << numeratorIndex << endl;
-    cout << "Num spaces: " << numSpaces << endl;
-    cout << "Num denominators " << numDenominators << endl;
+    //cout << "Iter: " << iter << endl;
+    //cout << "Numerator index: " << numeratorIndex << endl;
+    //cout << "Num spaces: " << numSpaces << endl;
+    //cout << "Num denominators " << numDenominators << endl;
 
     // Calculate the significant figures of the decimal by multiplying by 10
     // If there is an overflow, return false
