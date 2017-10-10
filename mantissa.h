@@ -53,6 +53,9 @@ bool mantissa(char numString[], int& numerator, int& denominator)
     int numSpaces = 0;
     bool reachedDecimal = false;
     bool reachedSign = false;
+    bool isNegative = false;
+
+    int numZeroes = 0;
 
     // First, check if all the characters are valid (0-9 or a decimal)
     do
@@ -76,10 +79,52 @@ bool mantissa(char numString[], int& numerator, int& denominator)
             }
             else if ( ((ch == '+') || (ch == '-')) && ((numString[iter - 1] == ' ') || (iter == 0)) && (reachedSign == false) )
             {
+                if ( (ch == '-' && numString[iter + 1] == '0' && numString[iter + 2] == '.') || 
+                    (ch == '-' && numString[iter + 1] == '.') )
+                {
+                    isNegative = true;
+                }
+
                 reachedSign = true;
             }
-            else
+            else if ( (ch != '\0') && (ch != ' ') )
+            {
                 return false;
+            }
+                
+        }
+        // Account for trailing zeroes
+        else if ((ch == '0') && (reachedDecimal == true))
+        {
+            numZeroes = 1;
+
+            int originalIter = iter;
+            int zeroIter = iter + 1;
+            char zeroCh = numString[zeroIter];
+
+            bool trailingZeroes = true;
+
+            while ((zeroCh < '0') || (zeroCh > '9'))
+            {
+                if (zeroIter == '0')
+                {
+                    numZeroes++;
+                }
+                else if (ch != '\0')
+                {
+                    numZeroes = 0;
+                    trailingZeroes = false;
+                    break;
+                }
+
+                zeroIter++;
+                zeroCh = numString[zeroIter];
+            }
+
+            if (trailingZeroes == true)
+            {
+                break;
+            }
         }
 
         iter++;
@@ -88,11 +133,16 @@ bool mantissa(char numString[], int& numerator, int& denominator)
     while (ch != '\0');
 
     // The numString of denominators is the total number of characters, minus 1 for the decimal, minus the numerators
+    // then subtract zeroes
     numDenominators = iter - numeratorIndex - 1 - numSpaces;
+    cout << "Iter: " << iter << endl;
+    cout << "Numerator index: " << numeratorIndex << endl;
+    cout << "Num spaces: " << numSpaces << endl;
+    cout << "Num denominators " << numDenominators << endl;
 
     // Calculate the significant figures of the decimal by multiplying by 10
     // If there is an overflow, return false
-    if (calculateDenominator(denominator, numDenominators) == false)
+    if ((calculateDenominator(denominator, numDenominators) == false) && (reachedDecimal == true))
     {
         return false;
     }
@@ -100,6 +150,17 @@ bool mantissa(char numString[], int& numerator, int& denominator)
     // Calculate the numerator's value.
     // This is done by taking the precision of the decimal and multiplying each digit by a power of 10.
     calculateNumerator(numerator, denominator, numeratorIndex, numDenominators, numString);
+
+    if (isNegative)
+    {
+        numerator = numerator * -1;
+    }
+
+    if (!reachedDecimal)
+    {
+        numerator = 0;
+        denominator = 10;
+    }
 
     return true;
 }
