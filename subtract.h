@@ -55,10 +55,16 @@ bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
 	bool validResult = true;
 
 	//normalizing the numerators and denominators means putting them on the same denominator scale via cross multiplication
-	int normalized_n1 = n1 * d2;
-	int normalized_n2 = n2 * d1;
+	int normalized_n1 = n1;
+	int normalized_n2 = n2;
+	int normalized_denominator = d1;
 
-	int normalized_denominator = d1 * d2;
+	if (d1 != d2) {
+		normalized_n1 = n1 * d2;
+		normalized_n2 = n2 * d1;
+
+		normalized_denominator = d1 * d2;
+	}
 
 	//overflow has occurred or one of the numbers is negative -> this is an improper result
 	if (normalized_n1 < 0
@@ -68,13 +74,23 @@ bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
 		return validResult;
 	}
 
+	int c_mult1 = 1;
+	int c_mult2 = 1;
+
+	if (c1 < 0) {
+		c_mult1 = -1;
+	}
+	if (c2 < 0) {
+		c_mult2 = -1;
+	}
+
 	//Combine the numerators with the whole numbers. This is done by multiplying the whole numbers by the new denominator
 	//risk of overflow in the second statements
-	int full_n1 = normalized_n1 + (normalized_denominator * c1);
-	int full_n2 = normalized_n2 + (normalized_denominator * c2);
+	int full_n1 = normalized_n1 + ((normalized_denominator * c1) * c_mult1);
+	int full_n2 = normalized_n2 + ((normalized_denominator * c2) * c_mult2);
 
 	//the final numerator value relative to the normalized denominator
-	int final_numerator = full_n1 - full_n2;
+	int final_numerator = (full_n1 * c_mult1) - (full_n2 * c_mult2);
 
 	//keep track of if the result is negative (mostly for printing down the line)
 	bool isNegativeResult = false;
@@ -113,15 +129,17 @@ bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
 			minusCounter++;
 		}
 
-		//Get the characteristic into the new array by "dividing off" each digit
-		while (final_characteristic > 10) {
-			temp_char_array[num_characteristic_digits++] = char(final_characteristic % 10 + '0');
+		if (final_characteristic != 0) {
+			//Get the characteristic into the new array by "dividing off" each digit
+			while (final_characteristic > 10) {
+				temp_char_array[num_characteristic_digits++] = char(final_characteristic % 10 + '0');
 
-			final_characteristic /= 10;
-		}
+				final_characteristic /= 10;
+			}
 
-		//the final digit, not caught by the loop above
-		temp_char_array[num_characteristic_digits++] = char(final_characteristic + '0');
+			//the final digit, not caught by the loop above
+			temp_char_array[num_characteristic_digits++] = char(final_characteristic + '0');
+		}		
 
 		//is there enough room to display all characters of the characteristic AND additional characters that are included?
 		if (num_characteristic_digits >= len 

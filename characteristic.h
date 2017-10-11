@@ -1,5 +1,3 @@
-
-#pragma once
 #include <iostream>
 
 using namespace std;
@@ -13,10 +11,28 @@ int charsBeforeDecimal(char numString[]);
 //convert chars into int and store it in c, which is passed by reference
 void convertToInt(char numString[], int numOfChar, int& c);
 
+int numOfLeadingWhitespace = 0;
+
+//int main(int argc, char* argv[])
+//{
+//	int c = 0;
+//
+//	// Breaks with grabage (two decimals)
+//	// Breaks with leading spaces
+//	char num[] = "      +123.456";
+//
+//	characteristic(num, c);
+//
+//	cout << "Characteristic of " << num << " is " << c << endl;
+//	return 0;
+//}
+
 bool characteristic(char numString[], int& c)
 {
 	//return value
 	bool retVal = false;
+	c = 0;
+	numOfLeadingWhitespace = 0;
 
 	//is the array that was passed in valid
 	if (numString != 0)
@@ -24,11 +40,16 @@ bool characteristic(char numString[], int& c)
 		//int that holds retVal of charsBeforeDecimal
 		int numOfChar = charsBeforeDecimal(numString);
 
+		if (numOfChar == 0)
+		{
+			return false;
+		}
+
 		//convert from char to int value
 		convertToInt(numString, numOfChar, c);
 
 		//print the number out
-		cout << "Final number: " << c << endl;
+		//cout << "Dimitrije's return number: " << c << endl;
 
 		//return true
 		retVal = true;
@@ -43,10 +64,10 @@ int charsBeforeDecimal(char numString[])
 	int counter = 0;
 
 	//checking if the array is valid
-	for (int i = 0; i < numString[i] != '/0'; i++)
+	for (int i = 0; numString[i] != '\0'; i++)
 	{
 		//if it reaches the decimal point, break
-		if (numString[i] == '.')
+		if ((numString[i] == '.') && (i != 0))
 		{
 			//reached .
 			break;
@@ -58,7 +79,11 @@ int charsBeforeDecimal(char numString[])
 		}
 
 		//if it is ' ' ... '\'
-		else if (numString[i] >= 32 && numString[i] <= 47)
+		else if (numString[i] == ' ')
+		{
+			numOfLeadingWhitespace++;
+		}
+		else if (numString[i] >= 33 && numString[i] <= 47)
 		{
 			//invalid string
 			counter = 0;
@@ -92,7 +117,7 @@ void convertToInt(char numString[], int numOfChar, int& c)
 	//When looping through numbers before decimal,
 	//will start at 0 if there are no signs if there are
 	//no signs before the number
-	int i = 0;
+	int i = numOfLeadingWhitespace;
 
 	//Boolean variable used to check if there is
 	//a sign before the number, if so multiply by -1
@@ -102,7 +127,7 @@ void convertToInt(char numString[], int numOfChar, int& c)
 	numOfChar -= 1;
 
 	//is there a negative sign before the number
-	if (numString[0] == '-')
+	if (numString[i] == '-')
 	{
 		//If there is a sign that means that we 
 		//have one less number
@@ -110,14 +135,14 @@ void convertToInt(char numString[], int numOfChar, int& c)
 
 		//And that also means that we are going to start at 1
 		//ex: -123
-		i = 1;
+		i = numOfLeadingWhitespace + 1;
 
 		//This is true now
 		isThereANegativeSign = true;
 	}
 
 	//is there a positive sign
-	else if (numString[0] == '+')
+	else if (numString[i] == '+')
 	{
 		//If there is a sign that means that we 
 		//have one less number
@@ -125,7 +150,7 @@ void convertToInt(char numString[], int numOfChar, int& c)
 
 		//And that also means that we are going to start at 1
 		//ex: +123
-		i = 1;
+		i = numOfLeadingWhitespace + 1;
 
 		isThereAPositiveSign = true;
 	}
@@ -143,57 +168,12 @@ void convertToInt(char numString[], int numOfChar, int& c)
 	//all cases for 0-9
 	for (i; i < numString[numOfChar]; i++)
 	{
-		if (numString[i] == '0')
-		{
-			c += 0 * pow;
-		}
+		if (numString[i] >= '0' && numString[i] <= '9') {
+			c += (numString[i] - 48) * pow;
 
-		else if (numString[i] == '1')
-		{
-			c += 1 * pow;
+			pow = pow / 10;
 		}
-
-		else if (numString[i] == '2')
-		{
-			c += 2 * pow;
-		}
-
-		else if (numString[i] == '3')
-		{
-			c += 3 * pow;
-		}
-
-		else if (numString[i] == '4')
-		{
-			c += 4 * pow;
-		}
-
-		else if (numString[i] == '5')
-		{
-			c += 5 * pow;
-		}
-
-		else if (numString[i] == '6')
-		{
-			c += 6 * pow;
-		}
-
-		else if (numString[i] == '7')
-		{
-			c += 7 * pow;
-		}
-
-		else if (numString[i] == '8')
-		{
-			c += 8 * pow;
-		}
-
-		else if (numString[i] == '9')
-		{
-			c += 9 * pow;
-		}
-
-		pow = pow / 10;
+		
 	}
 
 	//if there is - before the number
