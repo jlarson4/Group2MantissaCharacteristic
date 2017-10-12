@@ -8,6 +8,9 @@ bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
 bool determineValidity(bool isNegative, int numerator, int len);
 void testConditions(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len);
 void longDivision(int numerator, int denominator, int current_char, char result[], int len);
+bool isTriggerOverflow(int a, int b);
+void roundResult(bool hasDecimal, char result[], int len);
+void roundRecurser(bool roundUp, char result[], int len);
 
 /*int main() {
 
@@ -54,107 +57,121 @@ bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
 	//boolean value returned at the end, changed to false in the event of insufficient space in result[]
 	bool validResult = true;
 
-	//normalizing the numerators and denominators means putting them on the same denominator scale via cross multiplication
-	int normalized_n1 = n1;
-	int normalized_n2 = n2;
-	int normalized_denominator = d1;
-
-	if (d1 != d2) {
-		normalized_n1 = n1 * d2;
-		normalized_n2 = n2 * d1;
-
-		normalized_denominator = d1 * d2;
-	}
-
-	//overflow has occurred or one of the numbers is negative -> this is an improper result
-	if (normalized_n1 < 0
-		|| normalized_n2 < 0
-		|| normalized_denominator < 0) {
+	//over/underflow
+	if (isTriggerOverflow(c1, c2)) {
 		validResult = false;
-		return validResult;
 	}
+	else {
+		//normalizing the numerators and denominators means putting them on the same denominator scale via cross multiplication
+		int normalized_n1 = n1;
+		int normalized_n2 = n2;
+		int normalized_denominator = d1;
 
-	int c_mult1 = 1;
-	int c_mult2 = 1;
+		if (d1 != d2) {
+			normalized_n1 = n1 * d2;
+			normalized_n2 = n2 * d1;
 
-	if (c1 < 0) {
-		c_mult1 = -1;
-	}
-	if (c2 < 0) {
-		c_mult2 = -1;
-	}
-
-	//Combine the numerators with the whole numbers. This is done by multiplying the whole numbers by the new denominator
-	//risk of overflow in the second statements
-	int full_n1 = normalized_n1 + ((normalized_denominator * c1) * c_mult1);
-	int full_n2 = normalized_n2 + ((normalized_denominator * c2) * c_mult2);
-
-	//the final numerator value relative to the normalized denominator
-	int final_numerator = (full_n1 * c_mult1) - (full_n2 * c_mult2);
-
-	//keep track of if the result is negative (mostly for printing down the line)
-	bool isNegativeResult = false;
-
-	if (final_numerator < 0) {
-		isNegativeResult = true;
-		final_numerator *= -1;
-	}
-
-	//the final characteristic value is evaluated by determining how many parts of the final numerator fit in the normalized denominator
-	int final_characteristic = final_numerator / normalized_denominator;
-	final_numerator = final_numerator % normalized_denominator;
-
-	validResult = determineValidity(isNegativeResult, final_numerator, len);
-
-	if (validResult) {
-		//add the null terminating character
-		result[len - 1] = '\0';
-
-		//the current location in the array. If this number is equal to len(gth) - 1, we cannot add any more characters
-		unsigned int current_char = 0;
-
-		char* temp_char_array = new char[len];
-		int num_characteristic_digits = 0;
-
-		int decimalCounter = 0;
-		int minusCounter = 0;
-
-		if (final_numerator > 0) {
-			decimalCounter += 2;
+			normalized_denominator = d1 * d2;
 		}
 
-		//add the minus sign to the result array if necessary
-		if (isNegativeResult) {
-			result[current_char++] = '-';
-			minusCounter++;
-		}
-
-		if (final_characteristic != 0) {
-			//Get the characteristic into the new array by "dividing off" each digit
-			while (final_characteristic > 10) {
-				temp_char_array[num_characteristic_digits++] = char(final_characteristic % 10 + '0');
-
-				final_characteristic /= 10;
-			}
-
-			//the final digit, not caught by the loop above
-			temp_char_array[num_characteristic_digits++] = char(final_characteristic + '0');
-		}		
-
-		//is there enough room to display all characters of the characteristic AND additional characters that are included?
-		if (num_characteristic_digits >= len 
-			|| num_characteristic_digits + minusCounter >= len
-			|| num_characteristic_digits + minusCounter + decimalCounter >= len) {
+		//overflow has occurred or one of the numbers is negative -> this is an improper result
+		if (normalized_n1 < 0
+			|| normalized_n2 < 0
+			|| normalized_denominator < 0) {
 			validResult = false;
 		}
-		else {
-			//move characters from the temporary array to the result array. This is done in reverse, because they were put in in reverse
-			for (--num_characteristic_digits; num_characteristic_digits >= 0; num_characteristic_digits--) {
-				result[current_char] = temp_char_array[num_characteristic_digits];
-				current_char++;
+		
+		if (validResult) {
+			int c_mult1 = 1;
+			int c_mult2 = 1;
+
+			if (c1 < 0) {
+				c_mult1 = -1;
+			}
+			if (c2 < 0) {
+				c_mult2 = -1;
 			}
 
-			longDivision(final_numerator, normalized_denominator, current_char, result, len);
+			//Combine the numerators with the whole numbers. This is done by multiplying the whole numbers by the new denominator
+			//risk of overflow in the second statements
+			int full_n1 = normalized_n1 + ((normalized_denominator * c1) * c_mult1);
+			int full_n2 = normalized_n2 + ((normalized_denominator * c2) * c_mult2);
+
+			//the final numerator value relative to the normalized denominator
+			int final_numerator = (full_n1 * c_mult1) - (full_n2 * c_mult2);
+
+			//keep track of if the result is negative (mostly for printing down the line)
+			bool isNegativeResult = false;
+
+			if (final_numerator < 0) {
+				isNegativeResult = true;
+				final_numerator *= -1;
+			}
+
+			//the final characteristic value is evaluated by determining how many parts of the final numerator fit in the normalized denominator
+			int final_characteristic = final_numerator / normalized_denominator;
+			final_numerator = final_numerator % normalized_denominator;
+
+			/*bool needsDecimal = false;
+
+			if (final_numerator > 0) {
+				needsDecimal = true;
+			}*/
+
+			validResult = determineValidity(isNegativeResult, final_numerator, len);
+
+			if (validResult) {
+				//add the null terminating character
+				result[len - 1] = '\0';
+
+				//the current location in the array. If this number is equal to len(gth) - 1, we cannot add any more characters
+				unsigned int current_char = 0;
+
+				char* temp_char_array = new char[len];
+				int num_characteristic_digits = 0;
+
+				int decimalCounter = 0;
+				int minusCounter = 0;
+
+				if (final_numerator > 0) {
+					decimalCounter += 2;
+				}
+
+				//add the minus sign to the result array if necessary
+				if (isNegativeResult) {
+					result[current_char++] = '-';
+					minusCounter++;
+				}
+
+				if (final_characteristic != 0) {
+					//Get the characteristic into the new array by "dividing off" each digit
+					while (final_characteristic > 10) {
+						temp_char_array[num_characteristic_digits++] = char(final_characteristic % 10 + '0');
+
+						final_characteristic /= 10;
+					}
+
+					//the final digit, not caught by the loop above
+					temp_char_array[num_characteristic_digits++] = char(final_characteristic + '0');
+				}
+
+				//is there enough room to display all characters of the characteristic AND additional characters that are included?
+				if (num_characteristic_digits >= len
+					|| num_characteristic_digits + minusCounter >= len
+					|| num_characteristic_digits + minusCounter + decimalCounter >= len) {
+					validResult = false;
+				}
+				else {
+					//move characters from the temporary array to the result array. This is done in reverse, because they were put in in reverse
+					for (--num_characteristic_digits; num_characteristic_digits >= 0; num_characteristic_digits--) {
+						result[current_char] = temp_char_array[num_characteristic_digits];
+						current_char++;
+					}
+
+					longDivision(final_numerator, normalized_denominator, current_char, result, len);
+					//roundResult(needsDecimal, result, len);
+				}
+			}
 		}
 	}
 
@@ -178,12 +195,12 @@ bool determineValidity(bool isNegative, int numerator, int length) {
 	}
 
 	//if there isn't enough room for the '.', at least one number, and the null terminator, we know this will be an invalid result
-	else if (numerator > 0 && length < 4) {
+	else if (numerator > 0 && length < 3) {
 		isValid = false;
 	}
 
 	//if there isn't enough room for the '-', '.', at least one number, and the null terminator, we know this will be an invalid result
-	else if (isNegative && numerator > 0 && length < 5) {
+	else if (isNegative && numerator > 0 && length < 4) {
 		isValid = false;
 	}
 
@@ -225,7 +242,7 @@ void longDivision(int numerator, int denominator, int current_char, char result[
 		//if the last result is more than the normalized denominator we can do some operations on it to evaluate the decimal value
 		if (previous_result >= denominator) {
 			next_digit = 0;
-			while (((next_digit + 1) * denominator) < previous_result) {
+			while (((next_digit + 1) * denominator) <= previous_result) {
 				next_digit++;
 			}
 			result[current_char++] = char(next_digit + '0');
@@ -238,6 +255,55 @@ void longDivision(int numerator, int denominator, int current_char, char result[
 			}
 			else {
 				addZeroes = true;
+			}
+		}
+	}
+}
+
+bool isTriggerOverflow(int a, int b) {
+	bool doesTrigger = false;
+	
+	/*cout << a << endl;
+	cout << b << endl;*/
+	
+	if (a > 0 && b < 0 && (a + b) < b) {
+		doesTrigger = true;
+	}
+	if (a < 0 && b > 0 && (a - b) > a) {
+		doesTrigger = true;
+	}
+
+	return doesTrigger;
+}
+
+void roundResult(bool hasDecimal, char result[], int len) {
+
+	//setting the minimum length to 5, assuming that is a good threshold to start rounding when there are two 9s
+	if (hasDecimal && len > 5) {
+		roundRecurser(true, result, len - 2);
+	}
+}
+
+void roundRecurser(bool nineInPlace, char result[], int len) {
+
+	if (!nineInPlace) {
+		result[len] += 1;
+	}
+	else {
+		if (len == 1) {
+			return;
+		}
+
+		if (result[len] == '9') {
+			if (result[len - 1] == '9') {
+				result[len] = '\0';
+				roundRecurser(true, result, len - 1);
+			}
+			else {
+				if (nineInPlace) {
+					result[len] = '\0';
+				}
+				roundRecurser(false, result, len - 1);
 			}
 		}
 	}
