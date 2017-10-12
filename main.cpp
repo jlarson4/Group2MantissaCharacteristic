@@ -1,5 +1,6 @@
 #include <iostream>
 #include "mantissa.h"
+#include "divide.h"
 
 using namespace std;
 
