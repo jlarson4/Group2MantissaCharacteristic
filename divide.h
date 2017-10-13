@@ -1,5 +1,6 @@
 #include <iostream>
 #include "mantissa.h"
+#pragma once
 
 using namespace std;
 
