@@ -30,9 +30,17 @@ bool multiply(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
 	{
 		result[0] = 0 + '0';
 		result[1] = '\0';
-		display_array(result);
 		return true;
 	}
+
+	//check to see if the end result will be negative or poitive and then strop negatives
+	if (c1 < 0 && c2 > 0 || c1 > 0 && c2 < 0)
+	{
+		isNegative = true;
+	}
+	//strip the negatives
+	c1 = stripNegative(c1);
+	c2 = stripNegative(c2);
 
 	//check for overflow
 	unsigned long c1_test = c1;
@@ -49,14 +57,7 @@ bool multiply(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
 	{
 		result[i] = ' ';
 	}
-	//check to see if the end result will be negative or poitive and then strop negatives
-	if (c1 < 0 && c2 > 0 || c1 > 0 && c2 < 0)
-	{
-		isNegative = true;
-	}
-	//strip the negatives
-	c1 = stripNegative(c1);
-	c2 = stripNegative(c2);
+
 	// if the charictoristic is not 0 then convert to improper fraction
 	if (c1 == 0)
 	{
@@ -132,12 +133,19 @@ int convertFracToDec(int num, int den)
 	int remainder = 0;
 	int mantissa = 0;
 
-
+	/*
+	if (den % num == 0)
+	{
+	mantissa  = den / num;
+	return mantissa;
+	}
+	*/
 	remainder = num * 10;
 	while (true)
 	{
 		if (remainder % den == 0)
 		{
+			//long division
 			mantissa = addDigitToNum(mantissa, remainder / den);
 			return mantissa;
 		}
