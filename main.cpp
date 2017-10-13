@@ -1,120 +1,19 @@
 #include <iostream>
 #include "mantissa.h"
+#include "divide.h"
+#include "multiply.h"
 
 using namespace std;
 
 void testCharacteristicAndMantissa();
 void shouldConvert(char number[], int expectedCharacteristic, int expectedNumerator, int expectedDenominator);
 void shouldNotConvert(char number[]);
-bool characteristic(char numString[], int& c)
-{
-    int numOfChars = 0;
 
-    c = 0;
-
-    int iterator = 0;
-	int numOfLeadingSpaces = 0;
-	int numOfTrailingSpaces = 0;
-
-    bool isNegative = false;
-	bool hasPositive = false;
-	bool foundDecimal = false;
-
-    while (numString[iterator] != '\0')
-    {
-        if (numString[iterator] == ' ')
-        {
-			if (foundDecimal == false)
-			{
-				numOfLeadingSpaces++;
-			}
-			else
-			{
-				numOfTrailingSpaces++;
-			}
-        }
-        else if (numString[iterator] == '-')
-        {
-            isNegative = true;
-        }
-        else if (numString[iterator] == '+')
-        {
-            hasPositive = true;
-        }
-        else if (numString[iterator] == '.')
-        {
-			foundDecimal = true;
-			break;
-        }
-        else if ((numString[iterator] < '0') || (numString[iterator] > '9'))
-        {
-            return false;
-        }
-        else
-        {
-            numOfChars++;
-        }
-
-        iterator++;
-    }
-
-    int chartist = 0;
-    int pow = 1;
-
-    for (int j = 0; j < numOfChars; j++)
-    {
-        pow *= 10;
-    }
-
-    pow /= 10;
-
-    int k = numOfLeadingSpaces;
-
-    if ((isNegative) || (hasPositive))
-    {
-        k++;
-    }
-
-	if (foundDecimal)
-	{
-		while (numString[k] != '.')
-		{
-			chartist = chartist + (pow * (numString[k] - '0'));
-			k++;
-			pow /= 10;
-		}
-
-	}
-	else
-	{
-		int x = 0;
-		while (numString[x] != '\0')
-		{
-			if ((numString[x] != ' ') && (numString[x] != '-'))
-			{
-				chartist = chartist + (pow * (numString[x] - '0'));
-				pow /= 10;
-			}
-
-			x++;
-		}
-	}
-
-	if (isNegative)
-	{
-		chartist *= -1;
-	}
-	
-	c = chartist;
-
-    return true;
-}
-
-//void testMath();
-//void testAdd();
-//void testSubtract();
-//void testMultiply();
-//void testDivide();
+void testMath();
+void testAdd();
+void testSubtract();
+void testMultiply();
+void testDivide();
 
 int main()
 {
@@ -122,7 +21,7 @@ int main()
 	testCharacteristicAndMantissa();
 	
 	//math function tests
-	//testMath();
+	testMath();
 
 	return 0;
 }
@@ -188,12 +87,12 @@ void testCharacteristicAndMantissa()
 //--
 void shouldConvert(char number[], int expectedCharacteristic, int expectedNumerator, int expectedDenominator)
 {
-	int c /*n, d*/;
+	int c, n, d;
 
 	//if the conversion from C string to integers can take place
-	if (characteristic(number, c)/*mantissa(number, n, d)*/)
+	if (characteristic(number, c) && mantissa(number, n, d))
 	{
-		if (c == expectedCharacteristic /*&& *n == expectedNumerator && d == expectedDenominator*/)
+		if (c == expectedCharacteristic && n == expectedNumerator && d == expectedDenominator)
 		{
 			//test passes, do not print anything on a successful test
 		}
@@ -208,7 +107,7 @@ void shouldConvert(char number[], int expectedCharacteristic, int expectedNumera
 				cout << "expected characteristic: " << expectedCharacteristic << " "
 					<< "actual characteristic: " << c << endl;
 			}
-            /*
+            
 			if (expectedNumerator != n)
 			{
 				cout << "expected numerator: " << expectedNumerator << " "
@@ -221,7 +120,6 @@ void shouldConvert(char number[], int expectedCharacteristic, int expectedNumera
 				cout << "expected denominator: " << expectedDenominator << " "
 					<< "actual denominator: " << d << endl;
 			}
-			*/
 		}
 	}
 	else
@@ -233,16 +131,16 @@ void shouldConvert(char number[], int expectedCharacteristic, int expectedNumera
 //--
 void shouldNotConvert(char number[])
 {
-	int c/*, n, d*/;
+	int c, n, d;
 
 	//if the conversion from C string to integers can take place
-	if (characteristic(number, c) /*&& mantissa(number, n, d)*/)
+	if (characteristic(number, c) && mantissa(number, n, d))
 	{
 		cout << "Test failed: '" << number << "' "
 			<< "was parsed when it should NOT have been." << endl;
 	}
 }
-/*
+
 void testMath()
 {
 	//add
@@ -510,4 +408,3 @@ void testDivide()
     shouldConvert(largeArray, 0, 675, 1000);
     
 }
-*/
