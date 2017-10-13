@@ -2,6 +2,7 @@
 #include "mantissa.h"
 #include "divide.h"
 #include "multiply.h"
+#include "characteristicv2.h"
 
 using namespace std;
 
