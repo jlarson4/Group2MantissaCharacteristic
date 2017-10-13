@@ -3,6 +3,7 @@
 #include "divide.h"
 #include "multiply.h"
 #include "characteristicv2.h"
+#include "subtract.h"
 
 using namespace std;
 
