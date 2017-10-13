@@ -44,6 +44,14 @@ int charsBeforeDecimal(char numString[])
 	//checking if the array is valid
 	for (int i = 0; i < numString[i] != '/0'; i++)
 	{
+		if (numString[i] == ' ')
+		{
+		}
+
+		if (numString[i] == 0)
+		{
+		}
+
 		//if it reaches the decimal point, break
 		if (numString[i] == '.')
 		{
@@ -56,8 +64,8 @@ int charsBeforeDecimal(char numString[])
 			counter++;
 		}
 
-		//if it is ' ' ... '\'
-		else if (numString[i] >= 32 && numString[i] <= 47)
+		//if it is '!' ... '\'
+		else if (numString[i] > 32 && numString[i] <= 47)
 		{
 			//invalid string
 			counter = 0;
@@ -99,6 +107,12 @@ void convertToInt(char numString[], int numOfChar, int& c)
 	bool isThereAPositiveSign = false;
 	//Used this number for 10^num
 	numOfChar -= 1;
+
+	if (numOfChar == 0)
+	{
+		c = 0;
+	}
+
 
 	//is there a negative sign before the number
 	if (numString[0] == '-')
