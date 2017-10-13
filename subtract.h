@@ -1,8 +1,6 @@
 
 #pragma once
 #include <iostream>
-#include "mantissa.h"
-#include "characteristicv2"
 
 using namespace std;
 
