@@ -1,5 +1,5 @@
-#include "stdafx.h"
-
+//#include "stdafx.h"
+#pragma once
 #include <iostream>
 using namespace std;
 
