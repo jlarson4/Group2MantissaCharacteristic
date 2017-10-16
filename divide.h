@@ -10,6 +10,12 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
 {
 	//can we divide?
 	bool retval = true;
+	//cannot divide by zero
+	if (c1 == 0 || c2 == 0)
+	{
+		//division is not possible
+		return false;
+	}
 	//step 1: put numbers into this form:
 	//  x1   x2
 	//  __ / __
@@ -26,7 +32,6 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
 	unsigned int divide = (top / bottom);
 	//cout << divide << endl;
 	//turn the divide into a char array
-	//turn the remainder into a char array
 	int num2 = divide;
 	char* p_arr3 = new char[len];
 	int divCounter = 0;
@@ -37,6 +42,12 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
 		p_arr3[divCounter] = lsd;
 		divCounter++;
 		num2 = num2 / 10;
+
+		//if the divide to big to fit in results?
+		if (divCounter > len)
+		{
+			return false;
+		}
 	}
 	char* p_arr4 = new char[len];
 	int numDivDigits = divCounter;
