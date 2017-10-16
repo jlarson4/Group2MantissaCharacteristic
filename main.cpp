@@ -4,6 +4,7 @@
 #include "multiply.h"
 #include "characteristicv2.h"
 #include "subtract.h"
+#include "add.h"
 
 using namespace std;
 
