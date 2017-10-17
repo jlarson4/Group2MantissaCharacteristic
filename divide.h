@@ -1,15 +1,54 @@
 #include <iostream>
-#include "mantissa.h"
 #pragma once
 
 using namespace std;
 
 bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len);
 
+void longDivision(int top, int bottom,int len, char*& p_arr4);
+
+void longDivision(int top, int bottom, int len, char*& p_arr2)
+{
+	//do long division
+	p_arr2 = new char[len]; //for storing the answers
+
+	int div1 = top * 10;
+	int div2 = 0;
+	int answer = 0;
+	for (int i = 0; i < len; i++)
+	{
+		div1 = top * 10;
+		answer = div1 / bottom;
+		p_arr2[i] = answer + '0';
+		div2 = answer * bottom;
+		div1 = div1 - div2;
+	}
+}
+
 bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
 {
+	bool isNeg = false;
+	if (c1 < 0)
+	{
+		c1 = c1 * -1;
+		isNeg = true;
+	}
+	if (c2 < 0)
+	{
+		c2 = c2 * -1;
+		if (isNeg == true)
+			isNeg = false;
+		else
+			isNeg = true;
+	}
 	//can we divide?
 	bool retval = true;
+	//cannot divide by zero
+	if (c1 == 0 || c2 == 0)
+	{
+		//division is not possible
+		return false;
+	}
 	//step 1: put numbers into this form:
 	//  x1   x2
 	//  __ / __
@@ -26,7 +65,6 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
 	unsigned int divide = (top / bottom);
 	//cout << divide << endl;
 	//turn the divide into a char array
-	//turn the remainder into a char array
 	int num2 = divide;
 	char* p_arr3 = new char[len];
 	int divCounter = 0;
@@ -37,6 +75,12 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
 		p_arr3[divCounter] = lsd;
 		divCounter++;
 		num2 = num2 / 10;
+
+		//if the divide to big to fit in results?
+		if (divCounter > len)
+		{
+			return false;
+		}
 	}
 	char* p_arr4 = new char[len];
 	int numDivDigits = divCounter;
@@ -51,10 +95,15 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
 		p_arr4[i] = '0';
 	}
 
-	int remainder = (top % bottom);
+	//cout << p_arr4 << endl;
+
+	char* p_arr2 = new char[len];
+	longDivision(top, bottom, len, p_arr2);
+	//int remainder = (top % bottom);
 	//cout << remainder << endl;
 
 	//turn the remainder into a char array
+	/*
 	int num = remainder;
 	char* p_arr = new char[len];
 	int remCounter = 0;
@@ -78,21 +127,27 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
 	{
 		p_arr2[i] = '0';
 	}
+	*/
 
 	//Step 3: enter the value to the results
 	//this helps us know how many chars are in the results
 	int resultCounter = 0;
+	if (isNeg == true)
+	{
+		result[resultCounter] = '-';
+		resultCounter++;
+	}
 	for (int i = 0; i < numDivDigits; i++)
 	{
 		result[i] = p_arr4[i];
 		resultCounter++;
 	}
-	if (resultCounter >(len - 2))//***use resultcounter instead of result.size()
+	if (resultCounter >(len - 1))//***use resultcounter instead of result.size()
 	{
 		cout << "ERROR - not enough length in results!" << endl;
 		retval = false;
 	}
-	else if (resultCounter == (len - 2))//***use resultcounter instead of result.size()
+	else if (resultCounter == (len - 1))//***use resultcounter instead of result.size()
 	{
 		result[len] = '/0';
 		retval = true;
@@ -104,7 +159,7 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
 		resultCounter++;
 		//loop while adding remainder
 		int remainderCounter = 0;
-		while (resultCounter < (len - 2))
+		while (resultCounter < (len - 1))
 		{
 			result[resultCounter] = p_arr2[remainderCounter];
 			remainderCounter++;
@@ -113,7 +168,7 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
 		result[len - 1] = '\0';//***remainder is broken - 1/2 translates to .1 - do long division
 		retval = true;
 	}
-	delete[] p_arr;
+	//delete[] p_arr;
 	delete[] p_arr2;
 	delete[] p_arr3;
 	delete[] p_arr4;
