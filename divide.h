@@ -9,58 +9,6 @@ void longDivision(int top, int bottom,int len, char*& p_arr4);
 
 void longDivision(int top, int bottom, int len, char*& p_arr2)
 {
-	/*
-	cout << "Top: " << top << endl;
-	cout << "Bottom: " << bottom << endl;
-	//convert top to a char array
-	int num = top;
-	char* top_arr = new char[len];
-	int topCounter = 0;
-	while (num != 0 && topCounter < len)
-	{
-		int last = num % 10;
-		char lsd = last + '0';
-		top_arr[topCounter] = lsd;
-		topCounter++;
-		num = num / 10;
-	}
-	char* top_arr2 = new char[len];
-	int numTopDigits = topCounter;
-	for (int i = 0; i < numTopDigits; i++)
-	{
-		top_arr2[i] = top_arr[topCounter - 1];
-		topCounter--;
-	}
-	for (int i = numTopDigits; i < len; i++)
-	{
-		top_arr2[i] = '0';
-	}
-
-	//convert bottom to a char array
-	int num2 = bottom;
-	char* bottom_arr = new char[len];
-	int bottomCounter = 0;
-	while (num2 != 0 && bottomCounter < len)
-	{
-		int last = num2 % 10;
-		char lsd = last + '0';
-		bottom_arr[bottomCounter] = lsd;
-		bottomCounter++;
-		num2 = num2 / 10;
-	}
-	char* bottom_arr2 = new char[len];
-	int numBottomDigits = bottomCounter;
-	for (int i = 0; i < numBottomDigits; i++)
-	{
-		bottom_arr2[i] = bottom_arr[bottomCounter - 1];
-		bottomCounter--;
-	}
-	for (int i = numBottomDigits; i < len; i++)
-	{
-		bottom_arr2[i] = '0';
-	}
-	*/
-
 	//do long division
 	p_arr2 = new char[len]; //for storing the answers
 
@@ -194,12 +142,12 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
 		result[i] = p_arr4[i];
 		resultCounter++;
 	}
-	if (resultCounter >(len - 2))//***use resultcounter instead of result.size()
+	if (resultCounter >(len - 1))//***use resultcounter instead of result.size()
 	{
 		cout << "ERROR - not enough length in results!" << endl;
 		retval = false;
 	}
-	else if (resultCounter == (len - 2))//***use resultcounter instead of result.size()
+	else if (resultCounter == (len - 1))//***use resultcounter instead of result.size()
 	{
 		result[len] = '/0';
 		retval = true;
@@ -211,7 +159,7 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
 		resultCounter++;
 		//loop while adding remainder
 		int remainderCounter = 0;
-		while (resultCounter < (len - 2))
+		while (resultCounter < (len - 1))
 		{
 			result[resultCounter] = p_arr2[remainderCounter];
 			remainderCounter++;
