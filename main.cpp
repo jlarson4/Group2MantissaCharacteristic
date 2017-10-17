@@ -22,7 +22,7 @@ int main()
 {
 	//characteristic and mantissa test
 	testCharacteristicAndMantissa();
-	
+
 	//math function tests
 	testMath();
 
@@ -47,7 +47,7 @@ void testCharacteristicAndMantissa()
 	shouldConvert("    -123.456   ", -123, 456, 1000);
 
 	shouldConvert("0.456", 0, 456, 1000);
-	shouldConvert("   0.456", 0, 456, 1000); 
+	shouldConvert("   0.456", 0, 456, 1000);
 	shouldConvert("0.456   ", 0, 456, 1000);
 	shouldConvert("   0.456   ", 0, 456, 1000);
 
@@ -104,13 +104,13 @@ void shouldConvert(char number[], int expectedCharacteristic, int expectedNumera
 			cout << "Test failed: '" << number << "' "
 				<< "was parsed but did not produce the expected results" << endl;
 
-            
+
 			if (expectedCharacteristic != c)
 			{
 				cout << "expected characteristic: " << expectedCharacteristic << " "
 					<< "actual characteristic: " << c << endl;
 			}
-            
+
 			if (expectedNumerator != n)
 			{
 				cout << "expected numerator: " << expectedNumerator << " "
@@ -379,11 +379,11 @@ void testDivide()
 	//1 / -1.5 = "-.66"
 	divide(1, 0, 10, -1, 1, 2, shortArray, SHORT_ARRAY_LENGTH);
 	shouldConvert(shortArray, 0, -66, 100);
-	
+
 	//1 / -1.5 = "-.6666666"
 	divide(1, 0, 10, -1, 1, 2, mediumArray, MEDIUM_ARRAY_LENGTH);
 	shouldConvert(mediumArray, 0, -6666666, 10000000);
-	
+
 	//1 / -1.5 = "-.66666666666666666"
 	divide(1, 0, 10, -1, 1, 2, largeArray, LARGE_ARRAY_LENGTH);
 	char expectedResult1[] = "-.66666666666666666";
@@ -408,6 +408,6 @@ void testDivide()
 
 	//1.125 / 1.6R = "0.675"
 	divide(1, 1, 8, 1, 2, 3, largeArray, LARGE_ARRAY_LENGTH);
-    shouldConvert(largeArray, 0, 675, 1000);
-    
+	shouldConvert(largeArray, 0, 675, 1000);
+
 }
