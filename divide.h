@@ -99,35 +99,6 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
 
 	char* p_arr2 = new char[len];
 	longDivision(top, bottom, len, p_arr2);
-	//int remainder = (top % bottom);
-	//cout << remainder << endl;
-
-	//turn the remainder into a char array
-	/*
-	int num = remainder;
-	char* p_arr = new char[len];
-	int remCounter = 0;
-	while (num != 0)
-	{
-		int last = num % 10;
-		char lsd = last + '0';
-		p_arr[remCounter] = lsd;
-		remCounter++;
-		num = num / 10;
-	}
-	char* p_arr2 = new char[len];
-	int numRemDigits = remCounter;
-	//cout << remCounter << endl;
-	for (int i = 0; i < numRemDigits; i++)
-	{
-		p_arr2[i] = p_arr[remCounter - 1];
-		remCounter--;
-	}
-	for (int i = numRemDigits; i < len; i++)
-	{
-		p_arr2[i] = '0';
-	}
-	*/
 
 	//Step 3: enter the value to the results
 	//this helps us know how many chars are in the results
@@ -168,7 +139,6 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
 		result[len - 1] = '\0';//***remainder is broken - 1/2 translates to .1 - do long division
 		retval = true;
 	}
-	//delete[] p_arr;
 	delete[] p_arr2;
 	delete[] p_arr3;
 	delete[] p_arr4;
