@@ -142,6 +142,12 @@ bool mantissa(char numString[], int& numerator, int& denominator)
         numerator = numerator * -1;
     }
 
+	// If the denominator calculated was not changed, set it to 10 (n/d at least 0/10).
+	if (denominator == 1)
+	{
+		denominator = 10;
+	}
+	
     if (!reachedDecimal)
     {
         numerator = 0;
